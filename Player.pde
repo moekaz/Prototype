@@ -81,10 +81,8 @@ public class Player
     //check the player's bullets here
     for(int i = 0; i < bullets.size(); i++)
     {
-      System.out.println(bullets.get(i).timer);
       if (bullets.get(i).timer <= 0)
       {
-        System.out.println("deleted bullet");
         bullets.remove(i);
         i--;
       }

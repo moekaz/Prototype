@@ -27,6 +27,8 @@ void setup()
   player = new Player(new PVector(0, 0, 0) , 10);
   enemy = new Unit (new PVector (400 , 400 , 0) , player);
   tunnels = new ArrayList<Tunnel>();
+  
+  tunnels.add(new Tunnel(new PVector (300, 300, 0)));
 }
 
 //checks for key inputs
@@ -90,5 +92,21 @@ void Render()
 //check for collisions
 void CollisionDetection()
 {
+  //enemy bullet collision
   
+  //player bullet collision
+  
+  //enemy bullet collision
+  
+  //
+}
+
+boolean RectCircleCollision(Player player, Bullet bullet)
+{
+  return false;
+}
+
+boolean RectRectCollision(Player player1, Player player2)
+{
+  return false;
 }
