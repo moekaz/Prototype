@@ -4,6 +4,12 @@
   
 */
 
+//TODOSSSSS:
+//collision detection                       DONNNEEEE
+//ai for enemies(very basic)                
+//health bars                               DONNNEEEE
+//background creation and world creation
+
 //setup variables
 public Player player;      //player unit
 public Unit enemy;         //enemy unit
@@ -66,10 +72,12 @@ void Update(float deltaTime)
   //Collision Detection Should occur here
   CollisionDetection();
   
-  //Update here 
-  player.Update(deltaTime);
-  enemy.Update(deltaTime);
- 
+  //Update here win or lose conditions here
+  if (player.health <= 0 || enemy.enemy.health <= 0)
+  {
+    player.Update(deltaTime);
+    enemy.Update(deltaTime);
+  }
 }
 
 //Render units and game world
@@ -93,20 +101,68 @@ void Render()
 void CollisionDetection()
 {
   //enemy bullet collision
+  for (int i = 0; i < player.bullets.size(); i++)
+  {
+    if (RectCircleCollision(enemy.enemy , player.bullets.get(i))) 
+    {
+      System.out.println("collision");
+      player.bullets.remove(i);
+      enemy.enemy.health -= 5;
+    }
+  }
   
   //player bullet collision
+  for (int i = 0; i < enemy.enemy.bullets.size(); i++)
+  {
+    if (RectCircleCollision(player , enemy.enemy.bullets.get(i))) 
+    {
+      System.out.println("collision");
+      enemy.enemy.bullets.remove(i);
+      player.health -= 4;
+    }
+  }
+   
+  //bullet and tunnel collision
+  for (int i = 0; i < player.bullets.size(); i++)
+  {
+    for (int j = 0; j < tunnels.size(); j++)
+    {
+      if (CircleTriangleCollision(player.bullets.get(i) , tunnels.get(j)))
+      {
+        System.out.println("tunnel collision");
+        tunnels.get(j).RedirectBullet(player.bullets.get(i));
+      }
+    }
+  }
   
-  //enemy bullet collision
+  //player and enemy's own bullets collision
   
-  //
+  
+  //player enemy collision detection
 }
 
-boolean RectCircleCollision(Player player, Bullet bullet)
+//rectangle circle collision detection
+boolean RectCircleCollision(Player player1, Bullet bullet)
 {
-  return false;
+    return !(player1.position.x + player1.rectLength < bullet.position.x || 
+           player1.position.x > bullet.position.x + bullet.bulletWidth ||
+           player1.position.y + player1.rectWidth < bullet.position.y  ||
+           player1.position.y > bullet.position.y + bullet.bulletHeight);
 }
 
+//rectangle rectangle collision detection
 boolean RectRectCollision(Player player1, Player player2)
 {
-  return false;
+  return !(player1.position.x + player1.rectLength < player2.position.x || 
+         player1.position.x > player2.position.x + player2.rectLength ||
+         player1.position.y + player1.rectWidth < player2.position.y  ||
+         player1.position.y > player2.position.y + player2.rectWidth);
+}
+
+boolean CircleTriangleCollision(Bullet b , Tunnel t)
+{
+    return !(b.position.x + b.bulletWidth < t.position.x || 
+           b.position.x > t.position.x + t.tunnelWidth ||
+           b.position.y + b.bulletHeight < t.position.y  ||
+           b.position.y > t.position.y + t.tunnelHeight);
 }

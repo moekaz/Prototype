@@ -40,6 +40,7 @@ public class Tunnel
       PVector bulletPosition = new PVector(center.x , center.y);
       bulletPosition.x += (tunnelWidth/2 + bullet.bulletWidth + 1) * bullet.forwardDir.x;
       bulletPosition.y += (tunnelHeight/2 + bullet.bulletHeight + 1) * bullet.forwardDir.y;
+      bullet.position = bulletPosition;
   }
   
   //render tunnel

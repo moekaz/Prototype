@@ -4,7 +4,8 @@
 
 public class Player
 {
-  public int health;
+  public float health;
+  public float maxHealth;
   public PVector position;
   public PVector velocity;
   public PShape playerShape;
@@ -16,11 +17,13 @@ public class Player
   public PVector center;   
   public int maxFireRate;
   public int fireTimer;
-   
+  public HealthBar healthBar;
+  
   //setup player here
   public Player(PVector pos , int health)
   {
     this.health = health;
+    maxHealth = health;
     position = pos;
     playerShape = new PShape();
     velocity = new PVector();
@@ -32,6 +35,7 @@ public class Player
     center = new PVector();
     fireTimer = 0;
     maxFireRate = 30;
+    healthBar = new HealthBar(this);
   }
   
   //Add bullets
@@ -57,6 +61,9 @@ public class Player
   {
     //fireTimer change
     fireTimer--;
+    
+    //check health
+    if (health < 0) health = 0;
     
     //limit player velocity
     if (velocity.magSq() >= maxSpeed) 
@@ -96,11 +103,14 @@ public class Player
     //draw the UI player shape taking the position into consideration
     fill(shapeColor.x, shapeColor.y, shapeColor.z);
     rect(position.x , position.y , rectLength , rectWidth);
-    
+       
     //render player's bullets
     for(int i = 0; i < bullets.size(); i++)
     {
       bullets.get(i).Render(bulletColor);
     }
+    
+    //draw health bar 
+    healthBar.Render();
   }
 }
