@@ -1,11 +1,12 @@
 /*
   Author: Mohamed Kazma
-  Description: Prototype TUNNEL, MY ENEMY ?!??!?!?!??!?!?
+  Description: Prototype TUNNEL, MY ENEMY ?!??!?!?!??!?!? (Bullet Tunnel)
   
 */
 
 //setup variables
-public Player player;
+public Player player;      //player unit
+public Unit enemy;         //enemy unit
 public float deltaTime;
 public float elapsedTime;
 
@@ -15,30 +16,34 @@ void setup()
   //setup the window
   frameRate(60);
   size(800 , 600);
-  background(0,0,0);
+  background(0, 0, 0);
   
   //setup variables
   elapsedTime = 0;
   deltaTime = 1;
   
   //setup units
-  player = new Player(new PVector(0, 0, 0));
+  player = new Player(new PVector(0, 0, 0) , 10);
+  enemy = new Unit (new PVector (400 , 400 , 0) , player);
 }
 
 //checks for key inputs
 void keyPressed()
 {
   //check for player movement
-  if (key == 'w') { player.velocity.y -= 2; }
-  else if (key == 'a') { player.velocity.x -= 2; }
-  else if (key == 's') { player.velocity.y += 2; }
-  else if (key == 'd') { player.velocity.x += 2; }
+  if (key == 'w') { player.velocity.y -= player.speed; }
+  if (key == 'a') { player.velocity.x -= player.speed; }
+  if (key == 's') { player.velocity.y += player.speed; }
+  if (key == 'd') { player.velocity.x += player.speed; }
+  
+  //add a bullet to the player
+  if (keyCode == ' ') { player.AddBullet(new PVector(1, 0, 0)); }
 }
 
 //draw all drawable things here
 void draw()
 {  
-  //Update all updateables
+  //Update all updateables (deltaTime is not being used atm)
   Update(deltaTime);
   
   //render all renderables
@@ -49,11 +54,18 @@ void draw()
   //elapsedTime += millis();
 }
 
+
+
 //Update units and game world
 void Update(float deltaTime)
 {
+  //Collision Detection Should occur here
+  CollisionDetection();
+  
   //Update here 
   player.Update(deltaTime);
+  enemy.Update(deltaTime);
+ 
 }
 
 //Render units and game world
@@ -63,5 +75,12 @@ void Render()
   background(0,0,0);
   
   //draw stuff here
-  player.Render();
+  player.Render(new PVector (0, 255, 0) , new PVector(0, 0, 255));
+  enemy.Render(new PVector (255, 0 , 0) , new PVector(255, 255, 0));
+}
+
+//check for collisions
+void CollisionDetection()
+{
+  
 }
