@@ -9,6 +9,7 @@ public Player player;      //player unit
 public Unit enemy;         //enemy unit
 public float deltaTime;
 public float elapsedTime;
+public ArrayList<Tunnel> tunnels;
 
 //setup the environment for starting the game
 void setup()
@@ -25,6 +26,7 @@ void setup()
   //setup units
   player = new Player(new PVector(0, 0, 0) , 10);
   enemy = new Unit (new PVector (400 , 400 , 0) , player);
+  tunnels = new ArrayList<Tunnel>();
 }
 
 //checks for key inputs
@@ -77,6 +79,12 @@ void Render()
   //draw stuff here
   player.Render(new PVector (0, 255, 0) , new PVector(0, 0, 255));
   enemy.Render(new PVector (255, 0 , 0) , new PVector(255, 255, 0));
+  
+  //draw tunnels
+  for (int i = 0; i < tunnels.size(); i++)
+  {
+    tunnels.get(i).Render(new PVector(139, 69, 19));
+  }
 }
 
 //check for collisions

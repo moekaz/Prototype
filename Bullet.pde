@@ -2,7 +2,6 @@
   Description: 
 */
 
-
 public class Bullet
 {
   public float speed;
