@@ -1,21 +1,23 @@
 /*
   Author: Mohamed Kazma
-  Description: Prototype TUNNEL, MY ENEMY ?!??!?!?!??!?!? (Bullet Tunnel)
+  Description: Prototype TUNNEL, MY ENEMY ?!??!?!?!??!?!? (Bullet Tunnels)
   
 */
 
 //TODOSSSSS:
 //collision detection                       DONNNEEEE
-//ai for enemies(very basic)                
+//ai for enemies(very basic)                DONNNEEEE (kinda)
 //health bars                               DONNNEEEE
-//background creation and world creation
+//background creation and world creation    DONNNEEEE
 
 //setup variables
-public Player player;      //player unit
-public Unit enemy;         //enemy unit
-public float deltaTime;
-public float elapsedTime;
-public ArrayList<Tunnel> tunnels;
+public Player player;                //player unit
+public Unit enemy;                   //enemy unit
+public float deltaTime;              //for calculation of delta time
+public float elapsedTime;            //for calculation of delta time
+public ArrayList<Tunnel> tunnels;    //for storing tunnels
+
+/* Setup game world */
 
 //setup the environment for starting the game
 void setup()
@@ -34,8 +36,20 @@ void setup()
   enemy = new Unit (new PVector (400 , 400 , 0) , player);
   tunnels = new ArrayList<Tunnel>();
   
+  //Add more tunnels
   tunnels.add(new Tunnel(new PVector (300, 300, 0)));
+  tunnels.add(new Tunnel(new PVector (400, 100, 0)));
+  tunnels.add(new Tunnel(new PVector (400, 500, 0)));
+  tunnels.add(new Tunnel(new PVector (500, 200, 0)));
+  tunnels.add(new Tunnel(new PVector (600, 350, 0)));
+  tunnels.add(new Tunnel(new PVector (200, 400, 0)));
+  tunnels.add(new Tunnel(new PVector (700, 450, 0)));
+  tunnels.add(new Tunnel(new PVector (750, 50, 0)));
+
+  
 }
+
+/* Key pressed callback probably */
 
 //checks for key inputs
 void keyPressed()
@@ -49,6 +63,8 @@ void keyPressed()
   //add a bullet to the player
   if (keyCode == ' ') { player.AddBullet(new PVector(1, 0, 0)); }
 }
+
+/* While true loop */
 
 //draw all drawable things here
 void draw()
@@ -65,6 +81,7 @@ void draw()
 }
 
 
+/* Update */
 
 //Update units and game world
 void Update(float deltaTime)
@@ -73,12 +90,14 @@ void Update(float deltaTime)
   CollisionDetection();
   
   //Update here win or lose conditions here
-  if (player.health <= 0 || enemy.enemy.health <= 0)
+  if (player.health > 0 && enemy.enemy.health > 0)
   {
     player.Update(deltaTime);
     enemy.Update(deltaTime);
   }
 }
+
+/* Render */
 
 //Render units and game world
 void Render()
@@ -86,7 +105,7 @@ void Render()
   //reset background first
   background(0,0,0);
   
-  //draw stuff here
+  //draw player and enemy here
   player.Render(new PVector (0, 255, 0) , new PVector(0, 0, 255));
   enemy.Render(new PVector (255, 0 , 0) , new PVector(255, 255, 0));
   
@@ -97,6 +116,8 @@ void Render()
   }
 }
 
+/* Collision Detection Check */
+
 //check for collisions
 void CollisionDetection()
 {
@@ -105,7 +126,6 @@ void CollisionDetection()
   {
     if (RectCircleCollision(enemy.enemy , player.bullets.get(i))) 
     {
-      System.out.println("collision");
       player.bullets.remove(i);
       enemy.enemy.health -= 5;
     }
@@ -116,30 +136,60 @@ void CollisionDetection()
   {
     if (RectCircleCollision(player , enemy.enemy.bullets.get(i))) 
     {
-      System.out.println("collision");
       enemy.enemy.bullets.remove(i);
       player.health -= 4;
     }
   }
    
-  //bullet and tunnel collision
+   //player and player player bullets collision
   for (int i = 0; i < player.bullets.size(); i++)
   {
-    for (int j = 0; j < tunnels.size(); j++)
+    if (RectCircleCollision(player , player.bullets.get(i))) 
     {
-      if (CircleTriangleCollision(player.bullets.get(i) , tunnels.get(j)))
-      {
-        System.out.println("tunnel collision");
-        tunnels.get(j).RedirectBullet(player.bullets.get(i));
-      }
+      player.bullets.remove(i);
+      player.health -= 4;
     }
   }
   
-  //player and enemy's own bullets collision
+  //enemy and enemy bullets collision detection
+  for (int i = 0; i < enemy.enemy.bullets.size(); i++)
+  {
+    if (RectCircleCollision(enemy.enemy , enemy.enemy.bullets.get(i))) 
+    {
+      enemy.enemy.bullets.remove(i);
+      enemy.enemy.health -= 5;
+    }
+  } //<>//
+   
+  //bullet and tunnel collision
+  for (int j = 0; j < tunnels.size(); j++)
+  {
+    //player and tunnels
+    for (int i = 0; i < player.bullets.size(); i++)
+    {
+      if (CircleTriangleCollision(player.bullets.get(i) , tunnels.get(j)))
+      {
+        tunnels.get(j).RedirectBullet(player.bullets.get(i));
+      }
+    }
+    
+    //enemy and tunnels
+    for(int w = 0; w < enemy.enemy.bullets.size(); w++)
+    {
+      if (CircleTriangleCollision(enemy.enemy.bullets.get(w) , tunnels.get(j)))
+      {
+        tunnels.get(j).RedirectBullet(enemy.enemy.bullets.get(w));
+      }
+    }  
+  }
   
   
   //player enemy collision detection
+
 }
+
+
+/* Collision detection Functions */
 
 //rectangle circle collision detection
 boolean RectCircleCollision(Player player1, Bullet bullet)
@@ -159,6 +209,7 @@ boolean RectRectCollision(Player player1, Player player2)
          player1.position.y > player2.position.y + player2.rectWidth);
 }
 
+//circle triangle collison detection
 boolean CircleTriangleCollision(Bullet b , Tunnel t)
 {
     return !(b.position.x + b.bulletWidth < t.position.x || 
